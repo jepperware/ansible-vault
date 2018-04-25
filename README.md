@@ -3,7 +3,7 @@ This is a lookup module for secrets stored in [HashiCorp Vault](https://vaultpro
 Supports Ansible 1.9.x and 2.x
 
 #### Deprecation notice
-ansible-vault has been ***deprecated*** due to lack of personal usage of ansible and vault over the last years. There are other plugins such as [hashivault](https://github.com/TerryHowe/ansible-modules-hashivault) which provide the same functionality and are better maintained. 
+ansible-vault has been ***deprecated*** due to lack of personal usage of ansible and vault over the last years. There are other plugins such as [hashivault](https://github.com/TerryHowe/ansible-modules-hashivault) which provide the same functionality and are better maintained.
 
 ### Installation
 lookup plugins can be loaded from several different locations similar to `$PATH`, see
@@ -98,6 +98,8 @@ ansible-vault works as any other lookup plugin.
 {{ lookup('vault', 'pki/issue/example-dot-com common_name=foo.example.com format=pem_bundle').certificate }}
 # Specify field inside lookup
 {{ lookup('vault', 'secret/hello', 'value') }} # world
+# Specify field inside lookup - use a default if not found
+{{ lookup('vault', 'secret/hello', 'value', 'default_value') }} # world
 # This syntax for Ansible 1.9.x
 {{ lookup('vault', ['secret/hello', 'value']) }} # world
 
