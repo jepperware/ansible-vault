@@ -85,6 +85,11 @@ class LookupModule(LookupBase):
         except IndexError:
             field = None
 
+        try:
+            default = terms[2]
+        except IndexError:
+            default = None
+
         # the environment variable takes precendence over the Ansible variable.
         url = os.getenv('VAULT_ADDR') or (variables or inject).get('vault_addr')
         if not url:
@@ -141,6 +146,11 @@ class LookupModule(LookupBase):
                 return [result['data'][field]]
             elif 'data' in result:
                 return [result['data']]
+        elif result is None:
+            if default is not None:
+                return [default]
+            else:
+                raise AnsibleError('Key %s does not exist in Vault, and no default specified' % key)
         return [result]
 
     def _fetch_approle_token(self, cafile, capath, role_id, secret_id,
@@ -201,6 +211,8 @@ class LookupModule(LookupBase):
             if hasattr(ex, 'code') and ex.code in [301, 302, 303, 307]:
                 return self._fetch_secret(cafile, capath, data, key, vault_token, ex.headers.dict['location'],
                                           cahostverify, skipverify)
+            elif ex.code == 404:
+                return None
             else:
                 raise AnsibleError('Unable to read %s from vault: %s' % (key, ex))
         reader = codecs.getreader("utf-8")
