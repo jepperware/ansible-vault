@@ -148,7 +148,11 @@ class LookupModule(LookupBase):
                 return [result['data']]
         elif result is None:
             if default is not None:
+<<<<<<< HEAD
                 return [default]
+=======
+                return default
+>>>>>>> 996f46aeacbfc0f76b948a8528f7ba64afe30908
             else:
                 raise AnsibleError('Key %s does not exist in Vault, and no default specified' % key)
         return [result]
